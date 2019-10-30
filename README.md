@@ -1,4 +1,4 @@
-# vue-chrome-extension-boilerplate
+# Discord Expoter
 
 Boilerplate for Chrome extension using Vue.js and Webpack with Hot Reloading Enabled
 
