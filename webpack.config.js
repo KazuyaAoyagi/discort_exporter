@@ -18,6 +18,7 @@ const config = {
   entry: {
     options: './options/index.js',
     popup: './popup/index.js',
+    embed: './embed/index.js',
     background: './background/index.js',
     contentScripts: './contentScripts/index.js',
   },
@@ -120,6 +121,7 @@ if (isDevMode) {
         background: 'background',
         options: 'options',
         popup: 'popup',
+        embed: 'embed',
         contentScripts: 'contentScripts/index',
       },
     })
