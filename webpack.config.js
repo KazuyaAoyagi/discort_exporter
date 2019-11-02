@@ -122,7 +122,7 @@ if (isDevMode) {
         options: 'options',
         popup: 'popup',
         embed: 'embed',
-        contentScripts: 'contentScripts/index',
+        contentScripts: 'contentScripts/index'
       },
     })
   )

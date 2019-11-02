@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "bulma-fluent": "^0.3.18",
+    "jquery": "^3.4.1",
     "vue": "^2.6.10"
   },
   "description": "vue-chrome-extension-boilerplate",

@@ -1,16 +1,6 @@
 import './index.styl'
 
-console.log('Content script working...9')
-
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
-    console.log("aaaa")
-	console.log(message)
-	setTimeout(function(){
-		sendResponse({a:1,b:2})
-	}, 5000)
-	return true
-})
-
+console.log('Content script working...13')
 
 function injectScript(file, node) {
 	var s, th;
@@ -21,7 +11,17 @@ function injectScript(file, node) {
 	return th.appendChild(s);
   };
 
+  function injectStyle(file, node) {
+	var s, th;
+	th = document.getElementsByTagName(node)[0];
+	let link= document.createElement('link');
+	link.rel  = 'stylesheet';
+	link.type = 'text/css';
+	link.href = file;
+	link.media = 'all';
+	return th.appendChild(link);
+  };
 
-  injectScript(chrome.extension.getURL('bedbjalpdghkamdpclmgcankaidmlggg/embed.js'), 'body');
-
-
+  injectStyle(chrome.extension.getURL('contentScripts.css'), 'head')
+  injectScript(chrome.extension.getURL('embed.js'), 'body');
+  
