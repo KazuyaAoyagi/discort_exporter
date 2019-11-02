@@ -5,60 +5,33 @@ let exportList = []
 
 setTimeout(() => {
     let content = document.getElementsByClassName("containerCozyBounded-1rKFAn")
+    
+    let logParent = $('.containerCozyBounded-1rKFAn').parent().parent()[0]
+    
+    let logContaierHTML = `<div id='dico-log'>
+    <div>
+        <button id="btnCopy">COPY</button>
+    </div>
+    <div class="chatlog"></div>
+    </div>`
 
-    let div = document.createElement("div")
-    div.id = "dico-log"
-    div.style.cssText = 'padding-bottom: 200px; z-index:99999; background-color:#ccc; position:relative; overflow:scroll; width:200px;'
+    $(logParent).append(logContaierHTML)
     
+    $('.containerCozyBounded-1rKFAn').each((v,k) => {
+        let h2 = k.getElementsByTagName('h2')
+        if(k.getElementsByTagName('h2').length > 0) {
+            let exportHTML = `<button class="exportBtn">EXPORT</button>`
+            $(h2).append(exportHTML)
+        }
+    })
 
-    let container = content[0].parentNode.parentNode
-    
-    container.appendChild(div)
-    
-    let discoLog = document.getElementById("dico-log")
+    $('.exportBtn').on('click', e => {
+        let parent = e.currentTarget.parentNode.parentNode.parentNode.parentNode
+        let data = getInfo(parent)
+        console.log(data);
+        exportList.push(data)
 
-    $(discoLog).addClass("chatlog")
-    
-    let codeContainer = document.createElement("div")
-    codeContainer.id = "dico-log-container"
-    codeContainer.style.cssText = 'font-size:10px; color:#ccc; position:fixed; bottom:0; height:200px; width:200px; overflow:scroll;'
-    discoLog.appendChild(codeContainer)
-    
-    let codeContainer2 = document.getElementById("dico-log-container")
-    
-    Array.prototype.forEach.call(content, (item, k) => {
-        Array.prototype.forEach.call(item.children, (n, i) => {
-            if(n.children.length > 0) {
-                //名前取得
-                if(n.children[0].children.length > 1) {
-                    let h2 = n.children[0].getElementsByTagName("h2")
-                    if(h2.length > 0) {
-                        var button = document.createElement('button');
-                        button.type = "button"
-                        button.textContent = 'EXPORT';
-                        button.onclick= e => { 
-                            let parent = e.currentTarget.parentNode.parentNode.parentNode.parentNode
-                            let data = getInfo(parent)
-                            console.log(data);
-                            exportList.push(data)
-                            codeContainer2.innerText = discoLog.innerHTML
-                            createList()
-                            
-                        }
-
-                        h2[0].appendChild(button)
-
-                        //let discoLog = document.getElementById("dico-log")
-                        //let name = document.createElement("p")
-                        //name.textContent = h2[0].getElementsByTagName("span")[1].innerText
-                        //discoLog.append(name)
-                        //console.log(h2[0].getElementsByTagName("span")[1].innerText);   
-                    }
-                }
-            }
-            
-        })
-        
+        createList()
     })
     
 }, 7000)
@@ -83,7 +56,7 @@ function createList() {
 
     })
 
-    $("#dico-log").html(node)
+    $("#dico-log .chatlog").html(node)
 
     $(".btn-remove").on("click", e => {
         console.log("click");
