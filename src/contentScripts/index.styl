@@ -2,13 +2,30 @@
 #dico-log-container {
   background: #000;
 }
-#dico-log {
+#disco-log {
   backgroud:#000;
   width:300px;
+    padding-bottom:50px;
+    padding-right: 10px;
+  .export-util-container {
+        height:50px;
+        display:flex;
+        backgroud-color:#dcdcdc;
+
+        button {
+            width:50%;
+        }
+
+        textarea {
+            visibility:hidden
+        }
+
+    }
 }
 
 .chatlog {
-    
+    overflow:scroll;
+    height:100%;
     .chatlog__message-group {
         position:relative;
         display: flex;
