@@ -121,27 +121,24 @@ function getInfo(elm) {
     //     console.log(v)
     // })
     
-    Array.prototype.forEach.call(elm.children, (n, i) => {
-            
-        //$('div[class*="embed-content"]')
+    Array.prototype.forEach.call(elm.children, (n, i) => {            
         let contentCozy  = $(n).find('div[class*="contentCozy"]')
-
         contentCozy.each((i,elm) => {
-            
-            
             $(elm).children().each((a,b)=> {
-                
+
                 if($(b).find("span[class*='reactions']").length > 0) {
                     return
                 }
 
-                if($(b).find("div[class*='embedInner']").length > 0) {
-                    
+                if($(b).find("div[class*='embedInner']").length > 0) {                    
                     return
                 }
 
                 $(b).find('div[class*="markup"]').each((i,elm2) => {
-            
+                    console.log(elm2);
+                    
+                    $(elm2).find('time').remove()
+
                     if(!elm2.className.match(/embedContentInner/) || elm2.className.match(/embedContentInner/).length <= 0) {
                         contetText += `<p>${$(elm2).text()}</p>`
                     }
@@ -154,9 +151,7 @@ function getInfo(elm) {
                    </div>
                    `
                }    
-            
             })
-            
             
             $(elm).find('div[class*="embedInner"]').each((c,l) => {
                 console.log($(elm));
@@ -166,19 +161,22 @@ function getInfo(elm) {
             
                 let embedText = `<div class="chatlog__embed"><div class = "chatlog__embed-content-container"> `
 
-            
+                
+                console.log(">>>>>>>>4");
+                
                 let embedImageText = embedImage.length  > 0 ? `
                 <div class="chatlog__embed-image-container">
                     <a rel="noopener" target="_blank" class="chatlog__embed-image-link" href="${embedImage[0].href}">
-                        <img alt="" class="chatlog__embed-image" src="${embedImage[0].href}">
+                        <img alt="" class="chatlog__embed-image" src="${$(embedImage).find("img").length > 0 ? $(embedImage).find('img')[0].src:''}">
                      </a>
                  </div>
                 
                 `:'' 
-
+                console.log(">>>>>>>>5");
+                let authorImage = embedAuthor.find("img").length > 0 ? `<img alt="" class="chatlog__embed-author-icon" src="${embedAuthor.find("img")[0].src}" />`:''
                 let embedAuthorText = embedAuthor.length  > 0 ?`
                     <div class="chatlog__embed-author">
-                                <img alt="" class="chatlog__embed-author-icon" src="${embedAuthor.find("img")[0].src}" />
+                                ${authorImage}
                                 <p>
                                 <span class="chatlog__embed-author-name">
                                     <a rel="noopener" target="_blank" class="chatlog__embed-author-name-link" href="${embedAuthor.find("a")[0].href}">
@@ -189,21 +187,34 @@ function getInfo(elm) {
                             </p>
                         </div>
                 `: ''
+                console.log(">>>>>>>>6");
+                //let thumbnailText = `
+                // <div class="chatlog__embed-thumbnail-container">
+                //         <a rel="noopener" target="_blank" class="chatlog__embed-thumbnail-link" href="${$(l).find('img')[0].src}">
+                //             <img alt="" class="chatlog__embed-thumbnail" src="${$(l).find('img')[0].src ? $(l).find('img')[0].src : ''}">
+                //             <span class="fa fa-external-link external-icon anchor-icon"></span>
+                //         </a>
+                //         </div>
+                // `
+                console.log(l);
                 
-                let thumbnailText = `
-                <div class="chatlog__embed-thumbnail-container">
-                        <a rel="noopener" target="_blank" class="chatlog__embed-thumbnail-link" href="${$(l).find('img')[0].src}">
-                            <img alt="" class="chatlog__embed-thumbnail" src="${$(l).find('img')[0].src}">
-                            <span class="fa fa-external-link external-icon anchor-icon"></span>
-                        </a>
-                        </div>
-                `
+                //console.log($(l).find("a[class*='embedImage']")[0]);
+                //embedTitle
+                console.log(embedImageText);
+                let embedTitle = $(l).find("a[class*='embedTitle']").length > 0 ? `
+                    <div class="chatlog__embed-title">
+                    <a rel="noopener" target="_blank" class="chatlog__embed-title-link" href="${$(l).find("a[class*='embedTitle']")[0].href}">
+                        <span class="markdown">${$(l).find("a[class*='embedTitle']")[0].innerText}</span>
+                        <span class="fa fa-external-link external-icon anchor-icon"></span>
+                    </a>
+                </div>
+                `:''
                 embedText += `
                 <div class = "chatlog__embed-content">
                     <div class="chatlog__embed-text">
                         
                         ${embedAuthorText}
-
+                        ${embedTitle}
                         <div class="chatlog__embed-description">
                             ${$(l).find("div[class*='embedDescription']")[0].innerText}
                         </div>
