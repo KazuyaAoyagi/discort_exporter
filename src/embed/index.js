@@ -1,6 +1,7 @@
 import { setTimeout } from "timers"
 import $ from 'jquery'
 import ClipboardJS from "clipboard"
+import Sortable from 'sortablejs';
 
 let exportList = []
 
@@ -16,10 +17,44 @@ setInterval(()=>{
             <button id="btnClear">CLEAR</button>
     
         </div>
-        <div class="chatlog"></div>
+        <div id="chatlogContainer" class="chatlog"></div>
         </div>`
     
         $(logParent).append(logContaierHTML)
+        
+        
+        new Sortable(document.getElementById('chatlogContainer'), {
+            animation: 150,
+            group: 'shared',
+            swap: true,
+            ghostClass: 'blue-background-class',
+            onUpdate: function (evt) {
+                console.log("onUpdate");
+                
+                let data = exportList[evt.oldIndex]
+                exportList.splice(evt.oldIndex, 1)
+                exportList.splice(evt.newIndex, 0, data)
+                createList()
+            },
+            onAdd: function (evt) {
+                console.log("onAdd");
+                
+                let data = getInfo(evt.item)
+                exportList.splice(evt.newDraggableIndex, 0, data)
+                createList()
+            }
+        });
+
+        new Sortable(document.getElementsByClassName('messages-3amgkR')[0], {
+            group: {
+                name: 'shared',
+                pull: 'clone',
+                 put: false // Do not allow items to be put into this list
+            },
+            animation: 150,
+            swap: true,
+            ghostClass: 'blue-background-class',
+        });
         
         new ClipboardJS('#btnCopy', {
             text: function(trigger) {
