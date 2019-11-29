@@ -70,7 +70,7 @@ function createCopyStr() {
             <div class="chatlog__messages">
             <span class="chatlog__author-name">${v.name}</span>
             <div class="chatlog__content"> 
-                <p>${v.content}</p>
+                ${v.content}
             </div>
             </div>
             </div>
@@ -85,21 +85,52 @@ function createList() {
     exportList.forEach((v, i) => {
         node += 
             `<div data-id="${i}" class="chatlog__message-group">
-            <button class="btn-remove">×</button>
+                <button class="btn-edit">edit</button>
+                <button class="btn-remove">×</button>
             <div class="chatlog__author-avatar-container">
                 <img class="chatlog__author-avatar" src="${v.img.src}" />
             </div>
             <div class="chatlog__messages">
-            <span class="chatlog__author-name">${v.name}</span>
-            <div class="chatlog__content"> 
-                <p>${v.content}</p>
-            </div>
+                <span class="chatlog__author-name">${v.name}</span>
+                
+                <div class="chatlog-edit-area">
+                    <textarea>
+                        ${v.content}
+                    </textarea>
+                    <button data-id="${i}" class="btn-edit-save">保存</button>
+                    <button data-id="${i}" class="btn-edit-cancel">キャンセル</button>
+                </div>
+
+                <div class="chatlog__content"> 
+                        ${v.content}
+                </div>
             </div>
             </div>
             `
     })
 
     $("#disco-log .chatlog").html(node)
+
+    $(".btn-edit").on("click", e => {
+        console.log("edit")
+        $(e.currentTarget).parent().find('.chatlog-edit-area').css('display', "block")
+        $(e.currentTarget).parent().find('.chatlog__content').css('display', "none")
+    })
+
+    $(".btn-edit-save").on("click", e => {
+        console.log("save")
+        $(e.currentTarget).parent().parent().find('.chatlog-edit-area').css('display', "none")
+        $(e.currentTarget).parent().parent().find('.chatlog__content').css('display', "block")
+        let tartgetIndex = $(e.currentTarget).data().id
+        exportList[tartgetIndex].content = $(e.currentTarget).parent().find('textarea').val()
+        createList()
+
+    })
+
+    $(".btn-edit-cancel").on("click", e => {
+        $(e.currentTarget).parent().parent().find('.chatlog-edit-area').css('display', "none")
+        $(e.currentTarget).parent().parent().find('.chatlog__content').css('display', "block")
+    })
 
     $(".btn-remove").on("click", e => {
         console.log("click");
@@ -108,7 +139,9 @@ function createList() {
         createList()
     })
 }
+function editSave(index) {
 
+}
 function getInfo(elm) {
     let data = {
         name:"",

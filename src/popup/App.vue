@@ -9,7 +9,7 @@
 export default {
   data() {
     return {
-      msg: 'Discord Exporter'
+      msg: 'Discord Exporter２'
     }
   },
 
