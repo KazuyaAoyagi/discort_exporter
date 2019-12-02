@@ -2,8 +2,13 @@ import { setTimeout } from "timers"
 import $ from 'jquery'
 import ClipboardJS from "clipboard"
 import Sortable from 'sortablejs';
+import moment from 'moment'
+import daterangepicker from 'daterangepicker'
+
 
 let exportList = []
+let scrollTimer = null
+    
 
 setInterval(()=>{
     if($('#disco-log').length <= 0) {
@@ -11,34 +16,45 @@ setInterval(()=>{
     
         let logContaierHTML = `<div id='disco-log'>
         <div class='export-util-container'>
-            <button id="btnCopy">
-                Copy
-            </button>
+            <button id="btnCopy">COPY</button>
             <button id="btnClear">CLEAR</button>
-    
+        </div>
+        <div class="flex">    
+            <input type="text" name="datetimes" />
         </div>
         <div id="chatlogContainer" class="chatlog"></div>
         </div>`
     
         $(logParent).append(logContaierHTML)
-        
+        $('input[name="datetimes"]').daterangepicker({
+            timePicker: true,
+            startDate: moment().startOf('hour'),
+            endDate: moment().startOf('hour').add(32, 'hour'),
+            locale: {
+              format: 'M/DD hh:mm A'
+            }
+          });
+
+          $('input[name="datetimes"]').on('apply.daterangepicker', (ev, picker) => {
+              console.log(ev)
+              console.log(picker.startDate);
+              console.log(picker.endDate);
+
+              startScroll(picker.startDate, picker.endDate)
+          });
         
         new Sortable(document.getElementById('chatlogContainer'), {
             animation: 150,
             group: 'shared',
             swap: true,
             ghostClass: 'blue-background-class',
-            onUpdate: function (evt) {
-                console.log("onUpdate");
-                
+            onUpdate: (evt) => {
                 let data = exportList[evt.oldIndex]
                 exportList.splice(evt.oldIndex, 1)
                 exportList.splice(evt.newIndex, 0, data)
                 createList()
             },
-            onAdd: function (evt) {
-                console.log("onAdd");
-                
+            onAdd:  (evt) => {
                 let data = getInfo(evt.item)
                 exportList.splice(evt.newDraggableIndex, 0, data)
                 createList()
@@ -65,9 +81,13 @@ setInterval(()=>{
         });
         
         $('#btnClear').on('click', e => {
-            exportList = []
+            exportList =  []
             createList()
         })
+
+        
+        
+
         createList()
     }
     
@@ -176,6 +196,46 @@ function createList() {
 }
 function editSave(index) {
 
+}
+
+function startScroll(s,g) {
+    scrollTimer = setInterval(() => {
+        //console.log($('.messages-3amgkR .containerCozyBounded-1rKFAn .timestampCozy-2hLAPV'));
+        
+        let time = parseFloat($('.messages-3amgkR .containerCozyBounded-1rKFAn .timestampCozy-2hLAPV')[0].getAttribute('datetime'))
+        // console.log(s.format())
+        // console.log(moment.utc(time).format())
+        // console.log(moment.utc(time).add(9,'hours') < s)
+        
+        if(document.getElementsByClassName('messages-3amgkR')[0].scrollTop > 0 && moment.utc(time).add(9,'hours') > s) {
+            console.log('scrolling...')
+            document.getElementsByClassName('messages-3amgkR')[0].scrollTop = 0
+        } else {
+            console.log('clear!')
+            clearInterval(scrollTimer)
+            $('.containerCozyBounded-1rKFAn').each((v,k) => {
+
+                    
+                    
+                    //console.log(parseFloat($(k).find('.timestampCozy-2hLAPV').attr('datetime')));
+                    
+                    let ctime = parseFloat($(k).find('.timestampCozy-2hLAPV').attr('datetime'))
+                    
+                    console.log(s.format());
+                    console.log(g.format());
+                    console.log(moment.utc(ctime).add(9,'hours').format());
+                    
+                    
+                    if(moment.utc(ctime).add(9,'hours').isAfter(s) && moment.utc(ctime).add(9,'hours').isBefore(g)) {
+                        let d = getInfo(k)
+                        exportList.push(d)
+                    }
+                    
+
+            })
+            createList()
+        }
+        }, 800)
 }
 function getInfo(elm) {
     let data = {
